@@ -1,10 +1,13 @@
 import { fetchBreeds, fetchCatByBreed } from './cat-api.js';
 import SlimSelect from 'slim-select';
 import 'slim-select/dist/slimselect.css';
+import './loader.css';
+import Notiflix from 'notiflix';
 
 const breedSelect = document.querySelector('.breed-select');
 const infoCat = document.querySelector('.cat-info');
 const loaderInfo = document.querySelector('.loader');
+const loaderModal = document.querySelector('.loader-modal');
 const errorInfo = document.querySelector('.error');
 breedSelect.style.display = 'none';
 errorInfo.style.display = 'none';
@@ -29,10 +32,12 @@ function markupDetail(response) {
 }
 
 window.addEventListener('load', () => {
+  loaderModal.classList.toggle('is-hidden');
   fetchBreeds()
     .then(breeds => {
       markup(breeds);
       breedSelect.style.display = 'block';
+      loaderModal.classList.toggle('is-hidden');
       loaderInfo.style.display = 'none';
       errorInfo.style.display = 'none';
 
@@ -46,25 +51,28 @@ window.addEventListener('load', () => {
       });
     })
     .catch(error => {
-      errorInfo.style.display = 'block';
+      Notiflix.Notify.failure(errorInfo.textContent);
+      // errorInfo.style.display = 'block')
       loaderInfo.style.display = 'none';
-      console.log(error);
+      console.log(errorInfo.textContent);
     });
 });
 
 breedSelect.addEventListener('change', () => {
-  loaderInfo.style.display = 'block';
+  loaderModal.classList.toggle('is-hidden');
   infoCat.style.display = 'none';
   const selectedId = breedSelect.value;
   fetchCatByBreed(selectedId)
     .then(detail => {
       markupDetail(detail);
       infoCat.style.display = 'block';
+      loaderModal.classList.toggle('is-hidden');
       loaderInfo.style.display = 'none';
       errorInfo.style.display = 'none';
     })
     .catch(error => {
-      errorInfo.style.display = 'block';
+      Notiflix.Notify.failure(errorInfo.textContent);
+      //   errorInfo.style.display = 'block';
       loaderInfo.style.display = 'none';
       console.log(error);
     });
