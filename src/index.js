@@ -1,4 +1,6 @@
 import { fetchBreeds, fetchCatByBreed } from './cat-api.js';
+import SlimSelect from 'slim-select';
+import 'slim-select/dist/slimselect.css';
 
 const breedSelect = document.querySelector('.breed-select');
 const infoCat = document.querySelector('.cat-info');
@@ -23,8 +25,7 @@ function markupDetail(response) {
     <h1>${catBreedObj.name}</h1>
       <p>${catBreedObj.description}</p>
       <p> <b>Temperament: </b>${catBreedObj.temperament}</p>`;
-  console.log(information);
-  console.log((infoCat.innerHTML = information));
+  infoCat.innerHTML = information;
 }
 
 window.addEventListener('load', () => {
@@ -33,9 +34,20 @@ window.addEventListener('load', () => {
       markup(breeds);
       breedSelect.style.display = 'block';
       loaderInfo.style.display = 'none';
+      errorInfo.style.display = 'none';
+
+      new SlimSelect({
+        select: breedSelect,
+        settings: {
+          showSearch: true,
+          searchPlaceholder: 'Buscar',
+          maxValuesShown: 20,
+        },
+      });
     })
     .catch(error => {
       errorInfo.style.display = 'block';
+      loaderInfo.style.display = 'none';
       console.log(error);
     });
 });
@@ -49,9 +61,11 @@ breedSelect.addEventListener('change', () => {
       markupDetail(detail);
       infoCat.style.display = 'block';
       loaderInfo.style.display = 'none';
+      errorInfo.style.display = 'none';
     })
     .catch(error => {
       errorInfo.style.display = 'block';
+      loaderInfo.style.display = 'none';
       console.log(error);
     });
 });
